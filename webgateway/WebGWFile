@@ -1,0 +1,24 @@
+FROM containers.intersystems.com/intersystems/webgateway-arm64:latest-preview
+LABEL maintainer="Ariel Arias <ariel.arias@intersystems.com>"
+
+# docker build --no-cache -t irissrv -f ./webgateway/WebGWFile .
+
+# Install some updates
+USER root
+
+RUN apachectl stop
+
+RUN apt -y update && apt -y upgrade
+
+# Install some aditional software may be needed later
+RUN apt install -y vim nano net-tools unzip wget sudo curl yarn iputils-ping links 
+
+COPY CSP.ini /opt/webgateway/bin/CSP.ini
+
+WORKDIR /etc/apache2/sites-enabled
+RUN a2enmod ssl
+RUN ln -s ../sites-available/irissrv-ssl.conf irissrv-ssl.conf
+RUN ln -s ../sites-available/irissites.conf irissites.conf
+
+EXPOSE 80
+EXPOSE 443

@@ -1,0 +1,23 @@
+    do $SYSTEM.OBJ.Load("/irisfiles/Installer.cls", "ck")
+    set sc = ##class(App.Installer).setup()
+
+    zn "INT"
+    do $SYSTEM.OBJ.LoadDir("/irisfiles/BasicCRUD/","ck",,1)
+    ;Do ##class("BasicCRUD.CSVAnalysis").GetCSV("/home/irisowner/Education.csv")
+
+    zn "%SYS"
+    Do ##class(Security.Users).UnExpireUserPasswords("*")
+    do ##class(Security.Users).AddRoles("UnknownUser", "%ALL")
+
+    Set appint = ##class(Security.Applications).%New()
+    Set appint.AutheEnabled = 64
+    Set appint.CookiePath = "/basicpython"
+    Set appint.DispatchClass = "BasicCRUD.DockerApi"
+    Set appint.Enabled = 1
+    Set appint.Name = "/basicpython"
+    Set appint.NameSpace = "INT"
+    Set appint.MatchRoles =":%DB_INT"
+    Set sc = appint.%Save()
+
+    halt
+

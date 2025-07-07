@@ -1,0 +1,75 @@
+{
+	"info": {
+		"_postman_id": "1b97ff5f-7ad0-45e5-b1eb-d197f79bdac3",
+		"name": "BasicIRIS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2914919",
+		"_collection_link": "https://universal-eclipse-774271.postman.co/workspace/ISC-Sales~609ca855-88ea-478f-8e74-38044dd06035/collection/2914919-1b97ff5f-7ad0-45e5-b1eb-d197f79bdac3?action=share&source=collection_link&creator=2914919"
+	},
+	"item": [
+		{
+			"name": "Math",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"number1\": 3,\n    \"number2\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://irissrv.cl/irispython/basicpython/math",
+					"protocol": "https",
+					"host": [
+						"irissrv",
+						"cl"
+					],
+					"path": [
+						"irispython",
+						"basicpython",
+						"math"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "csv-analysis",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "csvFile",
+							"type": "file",
+							"src": "Education.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://irissrv.cl/irispython/basicpython/csv-analysis",
+					"protocol": "https",
+					"host": [
+						"irissrv",
+						"cl"
+					],
+					"path": [
+						"irispython",
+						"basicpython",
+						"csv-analysis"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

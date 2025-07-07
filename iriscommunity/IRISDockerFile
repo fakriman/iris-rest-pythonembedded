@@ -1,0 +1,36 @@
+FROM  containers.intersystems.com/intersystems/irishealth-community-arm64:2025.1
+LABEL maintainer="Ariel Arias <ariel.arias@intersystems.com>"
+
+# Install some updates
+USER root
+
+COPY pasosiniciales.script /home/irisowner/pasosiniciales.script
+
+COPY Education.csv /home/irisowner/Education.csv
+
+RUN chown irisowner:irisowner Education.csv
+RUN chown irisowner:irisowner pasosiniciales.script
+
+RUN apt -y update && apt -y upgrade
+
+# Install some aditional software may be needed later
+RUN apt-get install -y vim nano net-tools unzip wget sudo curl yarn iputils-ping links telnet
+
+RUN usermod -aG sudo irisowner
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN echo 'irisowner:python.123' | chpasswd
+USER ${ISC_PACKAGE_MGRUSER}
+
+# Some libraries
+RUN python3 -m pip install --target /usr/irissys/mgr/python pandas numpy matplotlib seaborn scikit-learn plotly openai requests scipy
+
+RUN iris stop iris quietly
+
+RUN iris rename iris irispython
+
+# run iris and initial 
+RUN iris start irispython \
+	&& iris session irispython < /home/irisowner/pasosiniciales.script
+
+EXPOSE 1972

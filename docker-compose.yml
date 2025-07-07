@@ -1,0 +1,64 @@
+name: IRIS Embedded Python
+
+services:
+  irisserver:
+    build:
+      context: webgateway
+      dockerfile: WebGWFile
+    restart: on-failure
+    container_name: irisserver
+    hostname: irissrv.cl
+    image: irisserver
+    ports:
+      - "80:80" 
+      - "443:443" 
+    volumes:
+      - type: bind
+        source: ./webgateway/irissrv-ssl.conf
+        target: /etc/apache2/sites-available/irissrv-ssl.conf
+      - type: bind
+        source: ./webgateway/irissites.conf
+        target: /etc/apache2/sites-available/irissites.conf
+      - type: bind
+        source: ./webgateway/irissrv.crt
+        target: /etc/ssl/certs/irissrv.crt
+      - type: bind
+        source: ./webgateway/irissrv.key
+        target: /etc/ssl/private/irissrv.key
+      - type: bind
+        source: common-shared
+        target: /shared
+    networks:
+    - irisenv-net
+    
+  irispython:
+    build:
+      context: iriscommunity
+      dockerfile: IRISDockerFile
+    restart: on-failure
+    container_name: irispython
+    hostname: irispython
+    image: irispython
+    ports:
+      - "2092:1972"     # SuperServer
+    command:
+      --check-caps false
+      --instance IRISPYTHON
+    volumes:
+      - ./iriscommunity:/irisfiles
+      - ./init.sh:/docker-entrypoint-initdb.d/init.sh
+      - type: bind
+        source: common-shared
+        target: /shared
+    environment:
+      - IRIS_USERNAME=_SYSTEM
+      - IRIS_PASSWORD=SYS
+      - ISC_PACKAGE_MGRUSER=irisowner
+    depends_on:
+      - irisserver
+    networks:
+    - irisenv-net
+
+networks:
+  irisenv-net:
+    external: true
